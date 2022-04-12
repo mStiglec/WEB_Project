@@ -1,18 +1,14 @@
 Project made for faculty WEB development course.
 
-There are multiple ideas for this project:
-1. Web multipage for football live and history data representation  
-	Page will contain live results, player data, league data ...
-	
-2. Web multipage for music data
-	Music data will be represented with authors, albums and song lyrics
-
-This will be done by APIs provided on RapidAPI marketplace.
+Final decision about project content is to make multipage
+website for football data and results. Decision is made based on better
+APIs that are free to use (APIs are provided on RapidAPI marketplace).
 
 IDE in which project will be developed is VS Code.
 If neccessary, firebase database will be used for storing data.
 
-Language in which web page will be developed is Javascript + NodeJs or JQuery.
-
+Language in which web page will be developed is Javascript.
+Additional libraries that will be used are Bootstrap 5 and JQuery.
 	
-
+Idea for LV2 is to set environment for project development and
+to make basic page structure.

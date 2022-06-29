@@ -77,15 +77,6 @@ session_start();
     <title>Document</title>
 </head>
 
-<script>
-    function initializeModal(){
-        var modal = document.getElementById("userInfoModal");
-        modal.addEventListener('shown.bs.modal',function(){
-            console.log(modal);
-        });
-    }
-
-</script>
 
 <body onload="initializeModal()">
 

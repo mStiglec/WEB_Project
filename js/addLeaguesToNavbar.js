@@ -2,7 +2,6 @@ function updateLeaguesNavbar(inputText){
     if(inputText==""){createLeaguesNavbar();return;}
     $.getJSON("../json/allLeagues.json",function(json){
         var leagues = json.response;
-        console.log(leagues[0].league);
         var chosenLeagues = [];
         for(let i=0;i<leagues.length;i++){
             if((leagues[i].league.name.toLowerCase()).includes(inputText.toLowerCase())){

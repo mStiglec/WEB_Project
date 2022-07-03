@@ -2,9 +2,6 @@ var NUMBER_OF_CLUB_PARAMETERS = 8;
 
 function createLeagueTable(){
     $.getJSON("../json/premierLeague.json",function(json){
-        console.log(json.response[0].league.name);
-        console.log(json.response[0].league.standings[0][0].points);
-        
         var clubsInfo = [];
         for(let i = 0;i<json.response[0].league.standings[0].length;i++){
             clubsInfo.push({"clubLogo":json.response[0].league.standings[0][i].team.logo,
@@ -86,7 +83,6 @@ function createTable(clubsInfo){
         .enter()
          .append("tr");
     
-    console.log(rows._groups[0]);
     for(let i=0;i<rows._groups[0].length;i++){
         d3.select(rows._groups[0][i]).append("th")
             .attr("scope","col")

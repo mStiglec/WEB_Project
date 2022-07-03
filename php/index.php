@@ -18,10 +18,13 @@ session_start();
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/jquery-3.6.0.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script type="text/javascript" src="../json/allCountries.json"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>-->
     <script type="text/javascript" src="../js/addCountriesToNavbar.js"></script>
     <script type="text/javascript" src="../js/addLeaguesToNavbar.js"></script>
     <script type="text/javascript" src="../js/createLeagueTable.js"></script>
+    <script type="text/javascript" src="../js/createClubInfo.js"></script>
+    <script type="text/javascript" src="../js/createPlayerStatistics.js"></script>
+
     <title>Document</title>
 </head>
 
@@ -29,10 +32,10 @@ session_start();
     /*const settings = {
 	"async": true,
 	"crossDomain": true,
-	"url": "https://api-football-v1.p.rapidapi.com/v3/standings?season=2021&league=39",
+	"url": "https://api-football-v1.p.rapidapi.com/v3/players?team=33&season=2020",
 	"method": "GET",
 	"headers": {
-		"X-RapidAPI-Key": "",
+		"X-RapidAPI-Key": "f052953cffmshb4960e24efe1d74p1d66b1jsn29243817482a",
 		"X-RapidAPI-Host": "api-football-v1.p.rapidapi.com"
 	}
 };
@@ -43,6 +46,7 @@ session_start();
     window.onload = function(){
         populateSidebar();
         createLeagueTable();
+        createClubInfo();
     }
 </script>
 
@@ -91,7 +95,7 @@ session_start();
         <div class="col-md-1"></div>
         <div class="col-md-10">
             <!--NAVBAR-->
-            <div class="sidebar-fixed p-3 bg-dark vh-100" style="width: 17%;float:left">
+            <div class="sidebar-fixed p-3 h-100" style="width: 17%;float:left;background-color:#21201F">
                 <ul class="list-unstyled ps-0">
                     <li class="mb-1">
                         <button class="btn btn-toggle align-items-center rounded collapsed text-white" 
@@ -134,40 +138,80 @@ session_start();
             </div>
 
             <!-- LEAGUE TABLE -->
-            <div id="leagueTableHeader" style="width:55%;float:left"></div>
-            
-            <table id="leagueTable" class="table table-hover table-striped table-dark" style="width:55%">
-                <!--<thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Team</th>
-                        <th scope="col">P</th>
-                        <th scope="col">W</th>
-                        <th scope="col">D</th>
-                        <th scope="col">L</th>
-                        <th scope="col">Goals</th>
-                        <th scope="col">Pts</th>
-                    </tr>
-                </thead>
-                <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Manchester city</td>
-                            <td>100</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Arsenal</td>
-                            <td>90</td>
-                        </tr>
-                            <th scope="row">3</th>
-                            <td>Liverpool</td>
-                            <td>80</td>
-                        </tr>
-                </tbody>-->
-            </table>
+            <div style="width:58%;float:left" class="p-1">
+                <div id="leagueTableHeader"></div>
+                <div class="panel panel-default">
+                    <table id="leagueTable" class="table table-hover table-striped table-dark"></table>
+                </div>
+                <div style="background-color:#21201F;color:white" class="rounded-3">
+                    <div id="playerLeagues" class="row text-center m-0 p-0 rounded-top border-bottom" style="background-color:#21201F">
 
-        </div>
+                    </div>
+                    <div class="row m-0">
+                        <div class="col-md-2" style="position:relative">
+                            <img id="playerImage" class="rounded-circle pt-2 ps-2 mt-2 ms-4" height="120px" width="120px">
+                            <img id="playerClub" class="rounded-circle p-2 m-0" 
+                                                    style="position:absolute;margin-left:-25px;left:15%;top:50%" 
+                                                    height="60px" 
+                                                    width="60px">
+                        </div>
+                        <div class="col-md-10">
+                            <div class="row">
+                                <div class="col-md-3 text-center"><p id="playerName" class="h5 mt-3 mb-0"></p><p class="pb-3 ms-2">Name</p></div>
+                                <div class="col-md-3 text-center"><p id="playerBirth" class="h5 mt-3 mb-0"></p><p class="pb-3">Age</p></div>
+                                <div class="col-md-3 text-center"><p id="playerHeight" class="h5 mt-3 mb-0"></p><p class="pb-3 ms-1">Height</p></div>
+                                <div class="col-md-3 text-center"><p id="playerWeight" class="h5 mt-3 mb-0"></p><p class="pb-3 ms-1">Weight</p></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 text-center"><p id="playerNationality" class="h5 mt-1 mb-0">Netherlands</p><p class="ms-2">Nationality</p></div>
+                                <div class="col-md-3 text-center"><p id="playerApps" class="h5 mt-1 mb-0">19(512)</p><p class="ms-2">Appereances(minutes)</p></div>
+                                <div class="col-md-3 text-center"><p id="playerPosition" class="h5 mt-1 mb-0">Midfielder</p><p class="ms-2">Position</p></div>
+                                <div class="col-md-3 text-center"><p id="playerRating" class="h5 mt-1 mb-0">6.16667</p><p class="ms-2">Rating</p></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="row">
+                                <div class="col-md-4 text-center"><p id="playerShots" class="h5 mt-4 ms-5 mb-0"></p><p class="pb-3 ms-5">Shots (on)</p></div>
+                                <div class="col-md-4 text-center"><p id="playerGoals" class="h5 mt-4 ms-5 mb-0"></p><p class="pb-3 ms-5">Goals (assists)</p></div>
+                                <div class="col-md-4 text-center"><p id="playerPasses" class="h5 mt-4 ms-5 mb-0"></p><p class="pb-3 ms-5">Passes</p></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 text-center"><p id="playerDuels" class="h5 mt-3 ms-5 mb-0"></p><p class="pb-3 ms-5">Duels (won)</p></div>
+                                <div class="col-md-4 text-center"><p id="playerCards" class="h5 mt-3 ms-5 mb-0"></p><p class="pb-3 ms-5">Yellow (red)</p></div>
+                                <div class="col-md-4 text-center"><p id="playerFoules" class="h5 mt-3 ms-5 mb-0"></p><p class="pb-3 ms-5">Foules</p></div>
+                            </div>
+                        </div>
+                        <div id="footballField" class="col-md-5 text-center">
+                            <img src="../svg/football_field.svg" height="250px" width="250px">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CLUB INFO -->
+            <div id="clubInfoHeader" class="rounded-2 m-1" style="width:24%;float:left;background-color:#21201F;color:white"></div>
+            
+            <div id="clubForm">
+                <svg style="float:left;width:25%;height:40px;background-color:#21201F" class="rounded-2"></svg>
+            </div>
+
+            <div id="clubGames">
+                <div style="float:left" class="ms-5 mt-2">
+                    <button class="btn btn-primary ms-5" onclick="updateGamesBarChart('total')">Total</button>
+                    <button class="btn btn-primary" onclick="updateGamesBarChart('home')">Home</button>
+                    <button class="btn btn-primary" onclick="updateGamesBarChart('away')">Away</button>
+                </div>
+                <svg class="mt-1 mb-1 rounded-2" style="float:left;width:25%;height:140px;background:#21201F;color:white"></svg>
+            </div>
+
+            <div id="playerClubList" class="rounded-2" style="background-color:#21201F;float:left;width:25%;color:white">
+                <p class="text-center p-1 m-1 border-bottom h5">Players</p>
+            </div>
+            
+
+
         <div class="col-md-1"></div>
     </div>
 </body>

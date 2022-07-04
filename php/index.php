@@ -21,32 +21,19 @@ session_start();
     <!--<script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>-->
     <script type="text/javascript" src="../js/addCountriesToNavbar.js"></script>
     <script type="text/javascript" src="../js/addLeaguesToNavbar.js"></script>
-    <script type="text/javascript" src="../js/createLeagueTable.js"></script>
-    <script type="text/javascript" src="../js/createClubInfo.js"></script>
+    <script type="text/javascript" src="../js/createClubInfo.js" defer></script>
+    <script type="text/javascript" src="../js/createLeagueTable.js" defer></script>
     <script type="text/javascript" src="../js/createPlayerStatistics.js"></script>
 
     <title>Document</title>
 </head>
 
 <script>
-    /*const settings = {
-	"async": true,
-	"crossDomain": true,
-	"url": "https://api-football-v1.p.rapidapi.com/v3/players?team=33&season=2020",
-	"method": "GET",
-	"headers": {
-		"X-RapidAPI-Key": "f052953cffmshb4960e24efe1d74p1d66b1jsn29243817482a",
-		"X-RapidAPI-Host": "api-football-v1.p.rapidapi.com"
-	}
-};
-    
-    $.ajax(settings).done(function (response) {
-        console.log(JSON.stringify(response));
-    });*/
     window.onload = function(){
         populateSidebar();
-        createLeagueTable();
-        createClubInfo();
+        showTableByLeagueId(39);
+        //fetchClubStatisticsFromApi(39,50);
+        //createClubInfo(); //called from create table
     }
 </script>
 
@@ -60,20 +47,6 @@ session_start();
                         <img  class="me-2" src="../svg/soccer-ball.svg" alt="Soccer ball" height="30px" loading="lazy">
                         <small class="text-white fw-bold">Football API</small>
                     </a>
-
-                    <!--<div class="navbar-collapse justify-content-center">
-                        <ul class="navbar-nav mb-2 mb-lg-0">
-                            <li class="nav-item me-4 pe-4">
-                                <button class="btn btn-primary" href="#">Leagues</button>
-                            </li>
-                            <li class="nav-item me-4 pe-4 ms-4 ps-4">
-                                <button class="btn btn-primary" href="#">Players</button>
-                            </li>
-                            <li class="nav-item ms-4 ps-4">
-                                <button class="btn btn-primary" href="#">Clubs</button>
-                            </li>
-                        </ul>
-                    </div>-->
 
                     <div class="dropdown">
                     <small class="fw-bold h5"><?php echo $user_data['userName']; ?> </small>

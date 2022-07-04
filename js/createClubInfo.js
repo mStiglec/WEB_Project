@@ -1,14 +1,34 @@
-function createClubInfo(){
-    $.getJSON("../json/TeamStatistic.json",function(json){
-        createHeader(json.response.league,json.response.team);
-        createForm(json.response.form);
-        updateGamesBarChart("total");
-        createPlayerList();
+var teamStatistic = [];
+
+function fetchClubStatisticsFromApi(leagueId,teamId){
+    var url = "https://api-football-v1.p.rapidapi.com/v3/teams/statistics?league=" + leagueId + "&season=2021&team=" + teamId;
+    const settings = {
+        "async": false,
+        "crossDomain": true,
+        "url": url,
+        "method": "GET",
+        "headers": {
+            "X-RapidAPI-Key": "",
+            "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com"
+        }
+    };
+    
+    $.ajax(settings).done(function (json) {
+        console.log(json.response);
+        teamStatistic = json.response;
     });
+}
+
+function createClubInfo(){
+    createHeader(teamStatistic.league,teamStatistic.team);
+    createForm(teamStatistic.form);
+    updateGamesBarChart("total");
+    //createPlayerList();
 }
 
 function createHeader(leagueData,teamData){
     var clubInfoHeader = d3.select("#clubInfoHeader");
+    clubInfoHeader.html("");
     clubInfoHeader.append("div")
         .style("float","left")
          .append("img")
@@ -37,6 +57,7 @@ function createForm(clubForm){
         formData.push(clubForm[clubForm.length-1-i]);
     }
 
+    d3.select("clubForm svg").html("");
     d3.select("#clubForm svg").selectAll("circle")
         .data(formData)
         .enter()

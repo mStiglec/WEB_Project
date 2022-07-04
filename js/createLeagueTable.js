@@ -1,35 +1,78 @@
 var NUMBER_OF_CLUB_PARAMETERS = 8;
 
-function createLeagueTable(){
-    $.getJSON("../json/premierLeague.json",function(json){
+function showTableByCountryCode(countryCode){
+    var url = "https://api-football-v1.p.rapidapi.com/v3/leagues?code=" + countryCode;
+    const settings = {
+        "async": false,
+        "crossDomain": true,
+        "url": url,
+        "method": "GET",
+        "headers": {
+            "X-RapidAPI-Key": "",
+            "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com"
+        }
+    };
+    
+    $.ajax(settings).done(function (json) {
+        console.log(json.response);
+        createLeagueTable(json.response)
+    });
+}
+
+function showTableByLeagueId(leagueId){
+    var url = "https://api-football-v1.p.rapidapi.com/v3/standings?season=2021&league=" + leagueId;
+    const settings = {
+        "async": false,
+        "crossDomain": true,
+        "url": url,
+        "method": "GET",
+        "headers": {
+            "X-RapidAPI-Key": "",
+            "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com"
+        }
+    };
+    
+    $.ajax(settings).done(function (json) {
+        console.log(json.response);
+        createLeagueTable(json.response);
+
+        // populate club info based on league and team id
+        console.log(json.parameters.league);
+        console.log(json.response[0].league.standings[0][0].team.id);
+        fetchClubStatisticsFromApi(json.parameters.league,json.response[0].league.standings[0][0].team.id);
+        createClubInfo();
+    });
+}
+
+function createLeagueTable(leagues){
         var clubsInfo = [];
-        for(let i = 0;i<json.response[0].league.standings[0].length;i++){
-            clubsInfo.push({"clubLogo":json.response[0].league.standings[0][i].team.logo,
-                            "clubName":json.response[0].league.standings[0][i].team.name,
-                            "gamesPlayed":json.response[0].league.standings[0][i].all.played,
-                            "gamesWin":json.response[0].league.standings[0][i].all.win,
-                            "gamesDraw":json.response[0].league.standings[0][i].all.draw,
-                            "gamesLose":json.response[0].league.standings[0][i].all.lose,
-                            "clubGoalsDiff":json.response[0].league.standings[0][i].all.goals.for + 
-                                    ":" + json.response[0].league.standings[0][i].all.goals.against,
-                            "clubPoints":json.response[0].league.standings[0][i].points});
+        for(let i = 0;i<leagues[0].league.standings[0].length;i++){
+            clubsInfo.push({"clubLogo":leagues[0].league.standings[0][i].team.logo,
+                            "clubName":leagues[0].league.standings[0][i].team.name,
+                            "gamesPlayed":leagues[0].league.standings[0][i].all.played,
+                            "gamesWin":leagues[0].league.standings[0][i].all.win,
+                            "gamesDraw":leagues[0].league.standings[0][i].all.draw,
+                            "gamesLose":leagues[0].league.standings[0][i].all.lose,
+                            "clubGoalsDiff":leagues[0].league.standings[0][i].all.goals.for + 
+                                    ":" + leagues[0].league.standings[0][i].all.goals.against,
+                            "clubPoints":leagues[0].league.standings[0][i].points});
         }
 
-        var leagueInfo = {"leagueName":json.response[0].league.name,
-                          "leagueLogo":json.response[0].league.logo,
-                          "leagueSeason":json.response[0].league.season,
-                          "leagueCountry":json.response[0].league.country,
-                          "countryFlag":json.response[0].league.flag,
+        var leagueInfo = {"leagueName":leagues[0].league.name,
+                          "leagueLogo":leagues[0].league.logo,
+                          "leagueSeason":leagues[0].league.season,
+                          "leagueCountry":leagues[0].league.country,
+                          "countryFlag":leagues[0].league.flag,
                           "clubsInfo":clubsInfo};
 
         createTableHeader(leagueInfo);
         createTable(leagueInfo.clubsInfo);
-    });
 }
 
 //add season as dropdown
 function createTableHeader(leagueInfo){
     var tableHeader = d3.select("#leagueTableHeader");
+    tableHeader.html("");
     var headerRow = tableHeader.append("div").attr("class","row p-0 m-0")
     headerRow.append("div")
          .attr("class","col-md-1 p-0")
@@ -69,6 +112,7 @@ function createTable(clubsInfo){
                            {"name":"Pts","width":"30"}];
 
     var leagueTable = d3.select("#leagueTable");
+    leagueTable.html("");
     leagueTable.append("thead")
         .append("tr").selectAll("th")
             .data(tableHeaderData)    

@@ -31,9 +31,8 @@ session_start();
 <script>
     window.onload = function(){
         populateSidebar();
-        showTableByLeagueId(39);
-        //fetchClubStatisticsFromApi(39,50);
-        //createClubInfo(); //called from create table
+        showTableByLeagueId(39); // 39 from user preferences (php)
+        //createClubInfo(39,50);
     }
 </script>
 
@@ -117,9 +116,7 @@ session_start();
                     <table id="leagueTable" class="table table-hover table-striped table-dark"></table>
                 </div>
                 <div style="background-color:#21201F;color:white" class="rounded-3">
-                    <div id="playerLeagues" class="row text-center m-0 p-0 rounded-top border-bottom" style="background-color:#21201F">
-
-                    </div>
+                    <div id="playerLeagues" class="row text-center m-0 p-0 rounded-top border-bottom" style="background-color:#21201F"></div>
                     <div class="row m-0">
                         <div class="col-md-2" style="position:relative">
                             <img id="playerImage" class="rounded-circle pt-2 ps-2 mt-2 ms-4" height="120px" width="120px">

@@ -65,7 +65,6 @@ function createCountriesNavbar(){
         .attr("class","rounded-circle m-1")
         .style("float","left")
         .on("click",function(d){
-            console.log(d.code);
             showTableByCountryCode(d.code);
         });
         
@@ -74,7 +73,6 @@ function createCountriesNavbar(){
         .style("float","left")
         .html(function(d){return d.name;})
         .on("click",function(d){
-            console.log(d.code);
             showTableByCountryCode(d.code);
         });
 }
@@ -97,7 +95,6 @@ function updateNavbar(chosenCountries){
         .attr("class","rounded-circle")
         .style("float","left")
         .on("click",function(d){
-            console.log(d.code);
             showTableByCountryCode(d.code);
         });
         
@@ -106,7 +103,6 @@ function updateNavbar(chosenCountries){
         .style("float","left")
         .html(function(d){return d.name;})
         .on("click",function(d){
-            console.log(d.code);
             showTableByCountryCode(d.code);
         });
     

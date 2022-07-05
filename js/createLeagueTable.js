@@ -14,7 +14,6 @@ function showTableByCountryCode(countryCode){
     };
     
     $.ajax(settings).done(function (json) {
-        console.log(json.response);
         createLeagueTable(json.response)
     });
 }
@@ -33,14 +32,10 @@ function showTableByLeagueId(leagueId){
     };
     
     $.ajax(settings).done(function (json) {
-        console.log(json.response);
         createLeagueTable(json.response);
 
         // populate club info based on league and team id
-        console.log(json.parameters.league);
-        console.log(json.response[0].league.standings[0][0].team.id);
-        fetchClubStatisticsFromApi(json.parameters.league,json.response[0].league.standings[0][0].team.id);
-        createClubInfo();
+        createClubInfo(json.parameters.league,json.response[0].league.standings[0][0].team.id);
     });
 }
 

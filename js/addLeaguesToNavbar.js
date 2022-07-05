@@ -13,7 +13,6 @@ function fetchLeaguesFromApi(){
     };
     
     $.ajax(settings).done(function (json) {
-        console.log(json.response);
         leagues = json.response;
     });
 }

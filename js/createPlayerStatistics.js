@@ -7,7 +7,7 @@ function createPlayerStatistics(playerData){
         playerLeagues.append("button")
                 .style("float","left")
                 .attr("class","btn btn-primary m-1 p-0")
-                .style("width",860/playerData.statistics.length + "px")
+                .style("width",(playerLeagues._groups[0][0].clientWidth-55)/playerData.statistics.length + "px")
                 .html(playerData.statistics[i].league.name)
                 .on("click",function(){
                     setPlayerStatistics(playerData,i);

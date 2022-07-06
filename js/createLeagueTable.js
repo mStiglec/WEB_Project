@@ -1,4 +1,5 @@
 var NUMBER_OF_CLUB_PARAMETERS = 8;
+var globalLeagueId;
 
 function showTableByCountryCode(countryCode){
     var url = "https://api-football-v1.p.rapidapi.com/v3/leagues?code=" + countryCode;
@@ -18,8 +19,26 @@ function showTableByCountryCode(countryCode){
     });
 }
 
-function showTableByLeagueId(leagueId){
-    var url = "https://api-football-v1.p.rapidapi.com/v3/standings?season=2021&league=" + leagueId;
+function fetchLeagueSeasons(){
+    const settings = {
+        "async": false,
+        "crossDomain": true,
+        "url": "https://api-football-v1.p.rapidapi.com/v3/leagues/seasons",
+        "method": "GET",
+        "headers": {
+            "X-RapidAPI-Key": "",
+            "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com"
+        }
+    };
+    
+    $.ajax(settings).done(function (json) {
+        createLeagueSeasons(json.response);
+    });
+}
+
+function showTableByLeagueId(leagueSeason,leagueId){
+    globalLeagueId = leagueId;
+    var url = "https://api-football-v1.p.rapidapi.com/v3/standings?season=" + leagueSeason  + "&league=" + leagueId;
     const settings = {
         "async": false,
         "crossDomain": true,
@@ -34,15 +53,30 @@ function showTableByLeagueId(leagueId){
     $.ajax(settings).done(function (json) {
         createLeagueTable(json.response);
 
-        // populate club info based on league and team id
-        createClubInfo(json.parameters.league,json.response[0].league.standings[0][0].team.id);
+        //createClubInfo(json.parameters.league,json.response[0].league.standings[0][0].team.id);
     });
+}
+
+function createLeagueSeasons(seasons){
+    var leagueSeasons = d3.select("#leagueSeasons");
+    leagueSeasons.selectAll("button")
+            .data(seasons)
+            .enter()
+             .append("button")
+              .style("float","left")
+              .attr("class","btn btn-primary btn-sm m-1 p-1")
+              .on("click",function(d,i){
+                console.log(i);
+                showTableByLeagueId(i,globalLeagueId);
+              })
+              .html(function(d){return d;});
 }
 
 function createLeagueTable(leagues){
         var clubsInfo = [];
         for(let i = 0;i<leagues[0].league.standings[0].length;i++){
-            clubsInfo.push({"clubLogo":leagues[0].league.standings[0][i].team.logo,
+            clubsInfo.push({"clubId": leagues[0].league.standings[0][i].team.id,
+                            "clubLogo":leagues[0].league.standings[0][i].team.logo,
                             "clubName":leagues[0].league.standings[0][i].team.name,
                             "gamesPlayed":leagues[0].league.standings[0][i].all.played,
                             "gamesWin":leagues[0].league.standings[0][i].all.win,
@@ -53,7 +87,8 @@ function createLeagueTable(leagues){
                             "clubPoints":leagues[0].league.standings[0][i].points});
         }
 
-        var leagueInfo = {"leagueName":leagues[0].league.name,
+        var leagueInfo = {"leagueId":leagues[0].league.id,
+                          "leagueName":leagues[0].league.name,
                           "leagueLogo":leagues[0].league.logo,
                           "leagueSeason":leagues[0].league.season,
                           "leagueCountry":leagues[0].league.country,
@@ -61,7 +96,7 @@ function createLeagueTable(leagues){
                           "clubsInfo":clubsInfo};
 
         createTableHeader(leagueInfo);
-        createTable(leagueInfo.clubsInfo);
+        createTable(leagueInfo);
 }
 
 //add season as dropdown
@@ -95,7 +130,8 @@ function createTableHeader(leagueInfo){
 }
 
 
-function createTable(clubsInfo){
+function createTable(leagueInfo){
+    var clubsInfo = leagueInfo.clubsInfo;
     var tableHeaderData = [{"name":"#","width":"20"},
                            {"name":" ","width":"30"},
                            {"name":"Team","width":"200"},
@@ -120,7 +156,11 @@ function createTable(clubsInfo){
     var rows = leagueTable.append("tbody").selectAll("tr")
         .data(clubsInfo)
         .enter()
-         .append("tr");
+         .append("tr")
+         .on("click",function(d,i){
+            console.log(i.clubId);
+            createClubInfo(leagueInfo.leagueId,i.clubId);
+        });
     
     for(let i=0;i<rows._groups[0].length;i++){
         d3.select(rows._groups[0][i]).append("th")
@@ -129,6 +169,7 @@ function createTable(clubsInfo){
             .html(i+1);
         
         for(const [key,value] of Object.entries(clubsInfo[i])){
+            if(key == "clubId"){continue;}
             if(key == "clubLogo"){
                 d3.select(rows._groups[0][i]).append("td")
                     .attr("class","p-0 m-0")

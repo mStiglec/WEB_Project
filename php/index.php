@@ -30,8 +30,9 @@ session_start();
 
 <script>
     window.onload = function(){
-        populateSidebar();
-        showTableByLeagueId(39); // 39 from user preferences (php)
+        //populateSidebar();
+        fetchLeagueSeasons();
+        showTableByLeagueId(2021,39); // 39 from user preferences (php)
         //createClubInfo(39,50);
     }
 </script>
@@ -69,7 +70,7 @@ session_start();
             <!--NAVBAR-->
             <div class="sidebar-fixed p-3 h-100" style="width: 17%;float:left;background-color:#21201F">
                 <ul class="list-unstyled ps-0">
-                    <li class="mb-1">
+                    <li class="mb-1 text-center">
                         <button class="btn btn-toggle align-items-center rounded collapsed text-white" 
                                 data-bs-toggle="collapse" 
                                 data-bs-target="#country-collapse" 
@@ -88,7 +89,7 @@ session_start();
                         </div>
                     </li>
 
-                    <li class="mb-1 mt-4" style="clear:both">
+                    <li class="mb-1 mt-5 text-center" style="clear:both">
                         <button class="btn btn-toggle align-items-center rounded collapsed text-white" 
                                 data-bs-toggle="collapse" 
                                 data-bs-target="#league-collapse" 
@@ -112,6 +113,7 @@ session_start();
             <!-- LEAGUE TABLE -->
             <div style="width:58%;float:left" class="p-1">
                 <div id="leagueTableHeader"></div>
+                <div id="leagueSeasons"></div>
                 <div class="panel panel-default">
                     <table id="leagueTable" class="table table-hover table-striped table-dark"></table>
                 </div>
